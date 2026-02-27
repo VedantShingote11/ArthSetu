@@ -1,0 +1,27 @@
+{
+  "name": "microfinance-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain layer for decentralized microfinance platform",
+  "main": "truffle-config.js",
+  "scripts": {
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --network development",
+    "migrate:reset": "truffle migrate --network development --reset",
+    "console": "truffle console --network development",
+    "test": "truffle test"
+  },
+  "keywords": [
+    "blockchain",
+    "microfinance",
+    "solidity",
+    "truffle",
+    "ethereum"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "dotenv": "^17.3.1",
+    "truffle": "^5.11.5"
+  }
+}
