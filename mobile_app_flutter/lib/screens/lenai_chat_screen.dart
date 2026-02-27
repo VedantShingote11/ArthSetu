@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/lenai_service.dart';
+import '../services/voice_service.dart';
 import '../providers/loan_provider.dart';
 import '../providers/kyc_provider.dart';
 import '../providers/auth_provider.dart';
@@ -42,10 +43,13 @@ class LenAiChatScreen extends StatefulWidget {
 class _LenAiChatScreenState extends State<LenAiChatScreen>
     with TickerProviderStateMixin {
   late LenAiService _lenAi;
+  final VoiceService _voice = VoiceService();
   final TextEditingController _inputCtrl = TextEditingController();
   final ScrollController _scrollCtrl = ScrollController();
   final List<_ChatMessage> _messages = [];
   bool _isTyping = false;
+  bool _isRecording = false;
+  bool _isTranscribing = false;
   late AnimationController _dotCtrl;
   String? _currentLangCode;
 
@@ -438,6 +442,7 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
         children: [
           Expanded(child: _buildMessageList()),
           if (_isTyping) _buildTypingIndicator(),
+          _buildMicBar(),
           _buildQuickActions(),
           _buildInputRow(),
         ],
@@ -532,6 +537,108 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
     final l10n = AppL10n.forCode(langCode);
     setState(() => _messages.clear());
     _addAiMessage(l10n.chatReset);
+  }
+
+  // ── Mic bar ────────────────────────────────────────────────────────────────
+
+  Widget _buildMicBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 2),
+      child: GestureDetector(
+        onTap: _toggleVoice,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: _isRecording
+                ? const LinearGradient(
+                    colors: [Color(0xFFDC2626), Color(0xFFEF4444)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            color: _isRecording
+                ? null
+                : const Color(0xFFEDE9FE),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: _isRecording
+                  ? Colors.red
+                  : const Color(0xFF7C3AED).withValues(alpha: 0.4),
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_isTranscribing)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Color(0xFF7C3AED)),
+                )
+              else
+                Icon(
+                  _isRecording ? Icons.stop_rounded : Icons.mic_rounded,
+                  color: _isRecording ? Colors.white : const Color(0xFF7C3AED),
+                  size: 20,
+                ),
+              const SizedBox(width: 8),
+              Text(
+                _isTranscribing
+                    ? 'Transcribing…'
+                    : _isRecording
+                        ? 'Listening…  Tap to stop'
+                        : 'Tap to speak',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: _isRecording
+                      ? Colors.white
+                      : const Color(0xFF5B21B6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Voice toggle ────────────────────────────────────────────────────────────
+
+  Future<void> _toggleVoice() async {
+    if (_isTyping || _isTranscribing) return;
+
+    if (_isRecording) {
+      setState(() { _isRecording = false; _isTranscribing = true; });
+      try {
+        final path = await _voice.stopRecording();
+        if (path != null) {
+          final text = await _voice.transcribe(path);
+          setState(() => _isTranscribing = false);
+          if (text.isNotEmpty) {
+            await _send(text);
+            return;
+          }
+        }
+      } catch (e) {
+        _addAiMessage('🎤 Voice error: $e', isError: true);
+      }
+      setState(() => _isTranscribing = false);
+    } else {
+      // Don't show recording state until permission confirmed and mic is active
+      try {
+        await _voice.startRecording(); // Kotlin will show permission dialog if needed
+        setState(() => _isRecording = true);
+      } on Exception catch (e) {
+        final msg = e.toString().contains('PERMISSION_DENIED')
+            ? '🎤 Microphone permission denied. Please allow microphone access in Settings.'
+            : '🎤 Could not start recording: $e';
+        _addAiMessage(msg, isError: true);
+      }
+    }
   }
 
   // ── Message list ───────────────────────────────────────────────────────────
