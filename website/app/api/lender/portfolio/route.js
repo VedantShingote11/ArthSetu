@@ -1,6 +1,6 @@
 import { requireRole } from '@/lib/auth/middleware';
 import LenderProfile from '@/lib/models/LenderProfile';
-import LoanRequest from '@/lib/models/LoanRequest';
+import Loan from '@/lib/models/Loan';
 import User from '@/lib/models/User';
 import dbConnect from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
@@ -25,27 +25,32 @@ export async function GET(request) {
         }
 
         // Get active loans
-        const activeLoans = await LoanRequest.find({
-            fundedBy: user.userId,
-            status: { $in: ['funded', 'active'] },
-        }).populate('borrowerId', 'name email');
+        const activeLoans = await Loan.find({
+            'lenders.lenderId': user.userId,
+            status: { $in: ['Funded', 'Active'] },
+        }).populate('borrower', 'name email');
 
         // Get completed loans
-        const completedLoans = await LoanRequest.find({
-            fundedBy: user.userId,
-            status: 'repaid',
+        const completedLoans = await Loan.find({
+            'lenders.lenderId': user.userId,
+            status: 'Repaid',
         });
 
         // Get defaulted loans
-        const defaultedLoans = await LoanRequest.find({
-            fundedBy: user.userId,
-            status: 'defaulted',
+        const defaultedLoans = await Loan.find({
+            'lenders.lenderId': user.userId,
+            status: 'Cancelled',
         });
 
+        const getMyContribution = (loan) => {
+            const lender = loan.lenders.find(l => l.lenderId.toString() === user.userId);
+            return lender ? lender.contributionAmount : 0;
+        };
+
         // Calculate metrics
-        const totalActiveAmount = activeLoans.reduce((sum, loan) => sum + loan.fundedAmount, 0);
-        const totalCompletedAmount = completedLoans.reduce((sum, loan) => sum + loan.fundedAmount, 0);
-        const totalDefaultedAmount = defaultedLoans.reduce((sum, loan) => sum + loan.fundedAmount, 0);
+        const totalActiveAmount = activeLoans.reduce((sum, loan) => sum + getMyContribution(loan), 0);
+        const totalCompletedAmount = completedLoans.reduce((sum, loan) => sum + getMyContribution(loan), 0);
+        const totalDefaultedAmount = defaultedLoans.reduce((sum, loan) => sum + getMyContribution(loan), 0);
 
         return NextResponse.json({
             success: true,

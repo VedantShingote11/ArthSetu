@@ -1,7 +1,7 @@
 import { requireRole } from '@/lib/auth/middleware';
 import { createBlock } from '@/lib/blockchain';
 import BorrowerProfile from '@/lib/models/BorrowerProfile';
-import LoanRequest from '@/lib/models/LoanRequest';
+import Loan from '@/lib/models/Loan';
 import dbConnect from '@/lib/mongodb';
 import { calculateRiskScore, suggestInterestRate } from '@/lib/riskEngine';
 import { NextResponse } from 'next/server';
@@ -15,7 +15,7 @@ export async function GET(request) {
 
         const { user } = authCheck;
 
-        const loans = await LoanRequest.find({ borrowerId: user.userId })
+        const loans = await Loan.find({ borrower: user.userId })
             .populate('fundedBy', 'name email')
             .sort({ createdAt: -1 });
 
@@ -148,20 +148,24 @@ export async function POST(request) {
         // Suggest interest rate
         const suggestedRate = suggestInterestRate(riskScore, amount, duration);
 
-        // Create loan request
-        const loanRequest = new LoanRequest({
-            borrowerId: user.userId,
-            amount,
-            purpose,
-            duration,
-            preferredInterestRate: preferredInterestRate || suggestedRate,
-            repaymentFrequency: repaymentFrequency || 'monthly',
-            description,
-            riskScore,
-            interestRate: suggestedRate,
+        // Create loan record using new schema
+        const p = parseFloat(amount);
+        const r = suggestedRate / 12 / 100;
+        const n = parseInt(duration);
+        const emiAmount = r > 0 ? (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : (p / n);
+
+        const loan = new Loan({
+            borrower: user.userId,
+            amount: p,
+            reason: description || purpose,
+            durationMonths: n,
+            creditScore: riskScore,
+            annualInterestRate: suggestedRate,
+            emiAmount: emiAmount,
+            status: 'Requested'
         });
 
-        await loanRequest.save();
+        await loan.save();
 
         // Update borrower profile
         borrowerProfile.totalLoansCount += 1;
@@ -174,10 +178,10 @@ export async function POST(request) {
             null,
             amount,
             {
-                loanId: loanRequest._id.toString(),
-                purpose,
-                duration,
-                interestRate: suggestedRate,
+                loanId: loan._id.toString(),
+                reason: description || purpose,
+                durationMonths: duration,
+                annualInterestRate: suggestedRate,
                 riskScore,
             }
         );
@@ -185,7 +189,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: 'Loan request created successfully',
-            loan: loanRequest.toObject(),
+            loan: loan.toObject(),
             suggestedInterestRate: suggestedRate,
         }, { status: 201 });
 

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const RepaymentSchema = new mongoose.Schema({
     loanId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'LoanRequest',
+        ref: 'Loan',
         required: true,
     },
     amount: {

@@ -105,7 +105,7 @@ export default function AdminUsers() {
                                     </div>
                                     <div>
                                         <p className="text-muted" style={{ fontSize: '0.75rem' }}>Profile Score</p>
-                                        <p style={{ fontWeight: '600' }}>{user.kycDetails?.creditScore || user.creditScore || user.profile?.riskScore || 0}</p>
+                                        <p style={{ fontWeight: '600' }}>{user.creditScore || 0}</p>
                                     </div>
                                     {user.role === 'lender' && (
                                         <div>

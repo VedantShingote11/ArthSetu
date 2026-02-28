@@ -1,1 +1,13 @@
-{}
+{
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/api/admin/users/route": "app/api/admin/users/route.js",
+  "/api/admin/loans/route": "app/api/admin/loans/route.js",
+  "/api/admin/kyc/route": "app/api/admin/kyc/route.js",
+  "/api/admin/blockchain/route": "app/api/admin/blockchain/route.js",
+  "/admin/blockchain/page": "app/admin/blockchain/page.js",
+  "/admin/users/page": "app/admin/users/page.js",
+  "/admin/kyc/page": "app/admin/kyc/page.js"
+}

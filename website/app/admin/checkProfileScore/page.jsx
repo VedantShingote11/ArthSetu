@@ -95,7 +95,7 @@ export default function CheckProfileScore() {
     // Calculate circumference for circular progress indicator
     const radius = 60;
     const circumference = 2 * Math.PI * radius;
-    const score = user.kycDetails?.creditScore || user.creditScore || 0;
+    const score = user.creditScore || 0;
     // Map score (300-900) to percentage (0-100) for the circle
     const percentage = Math.max(0, Math.min(100, ((score - 300) / 600) * 100));
     const strokeDashoffset = circumference - (percentage / 100) * circumference;

@@ -1,4 +1,4 @@
-import LoanRequest from './models/LoanRequest.js';
+import Loan from './models/Loan.js';
 
 /**
  * Calculate Profile Score for a borrower (300-900)
@@ -7,8 +7,9 @@ import LoanRequest from './models/LoanRequest.js';
 export async function calculateRiskScore(borrowerProfile, borrowerId) {
     let score = 400; // Start with base risk
 
-    // Get borrower's loan history
-    const loans = await LoanRequest.find({ borrowerId }).sort({ createdAt: -1 });
+    // 3. Past Loan History (20%)
+    let loanHistoryScore = 20;
+    const loans = await Loan.find({ borrower: borrowerId }).sort({ createdAt: -1 });
 
     if (loans.length === 0) {
         // New borrower
@@ -16,11 +17,11 @@ export async function calculateRiskScore(borrowerProfile, borrowerId) {
     }
 
     // Factor 1: Repayment history (Up to +200 points)
-    const completedLoans = loans.filter(loan => loan.status === 'repaid');
-    const defaultedLoans = loans.filter(loan => loan.status === 'defaulted');
+    const repaidLoans = loans.filter(l => l.status === 'Repaid').length;
+    const defaultedLoans = loans.filter(l => l.status === 'Cancelled').length;
 
-    if (completedLoans.length > 0) {
-        const repaymentRate = completedLoans.length / loans.length;
+    if (repaidLoans > 0) {
+        const repaymentRate = repaidLoans / loans.length;
         score += repaymentRate * 150; // Good repayment increases score
     }
 

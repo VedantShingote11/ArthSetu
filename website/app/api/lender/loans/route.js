@@ -2,7 +2,7 @@ import { requireRole } from '@/lib/auth/middleware';
 import { createBlock } from '@/lib/blockchain';
 import BorrowerProfile from '@/lib/models/BorrowerProfile';
 import LenderProfile from '@/lib/models/LenderProfile';
-import LoanRequest from '@/lib/models/LoanRequest';
+import Loan from '@/lib/models/Loan';
 import dbConnect from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
 
@@ -21,16 +21,16 @@ export async function GET(request) {
         const maxAmount = searchParams.get('maxAmount');
 
         // Build query
-        const query = { status: 'requested' };
+        const query = { status: 'Requested' };
 
         if (minRisk || maxRisk) {
-            query.riskScore = {};
-            if (minRisk) query.riskScore.$gte = parseInt(minRisk);
-            if (maxRisk) query.riskScore.$lte = parseInt(maxRisk);
+            query.creditScore = {};
+            if (minRisk) query.creditScore.$gte = parseInt(minRisk);
+            if (maxRisk) query.creditScore.$lte = parseInt(maxRisk);
         }
 
         if (purpose) {
-            query.purpose = { $regex: purpose, $options: 'i' };
+            query.reason = { $regex: purpose, $options: 'i' };
         }
 
         if (minAmount || maxAmount) {
@@ -39,14 +39,14 @@ export async function GET(request) {
             if (maxAmount) query.amount.$lte = parseInt(maxAmount);
         }
 
-        const loans = await LoanRequest.find(query)
-            .populate('borrowerId', 'name email')
+        const loans = await Loan.find(query)
+            .populate('borrower', 'name email')
             .sort({ createdAt: -1 });
 
         // Enrich with borrower profiles
         const enrichedLoans = await Promise.all(
             loans.map(async (loan) => {
-                const borrowerProfile = await BorrowerProfile.findOne({ userId: loan.borrowerId._id });
+                const borrowerProfile = await BorrowerProfile.findOne({ userId: loan.borrower._id });
                 return {
                     ...loan.toObject(),
                     borrowerProfile: borrowerProfile ? {
@@ -90,7 +90,7 @@ export async function POST(request) {
         }
 
         // Get loan request
-        const loan = await LoanRequest.findById(loanId);
+        const loan = await Loan.findById(loanId);
 
         if (!loan) {
             return NextResponse.json(
@@ -99,7 +99,7 @@ export async function POST(request) {
             );
         }
 
-        if (loan.status !== 'requested') {
+        if (loan.status !== 'Requested' && loan.status !== 'Funded') {
             return NextResponse.json(
                 { error: 'Loan is not available for funding' },
                 { status: 400 }
@@ -125,10 +125,17 @@ export async function POST(request) {
         }
 
         // Update loan
-        loan.status = 'funded';
-        loan.fundedBy = user.userId;
-        loan.fundedAmount = fundAmount;
-        loan.fundedDate = new Date();
+        loan.lenders.push({
+            lenderId: user.userId,
+            contributionAmount: fundAmount,
+            fundedAt: new Date()
+        });
+        loan.fundedAmount = (loan.fundedAmount || 0) + fundAmount;
+
+        if (loan.fundedAmount >= loan.amount) {
+            loan.status = 'Funded';
+            loan.fundedAt = new Date();
+        }
         await loan.save();
 
         // Update lender profile
@@ -138,24 +145,23 @@ export async function POST(request) {
         await lenderProfile.save();
 
         // Update borrower profile
-        const borrowerProfile = await BorrowerProfile.findOne({ userId: loan.borrowerId });
+        const borrowerProfile = await BorrowerProfile.findOne({ userId: loan.borrower });
         if (borrowerProfile) {
             borrowerProfile.activeLoanCount += 1;
             borrowerProfile.totalBorrowed += fundAmount;
             await borrowerProfile.save();
         }
 
-        // Create blockchain block
         await createBlock(
             'loan_funded',
             user.userId,
-            loan.borrowerId,
+            loan.borrower,
             fundAmount,
             {
                 loanId: loan._id.toString(),
-                purpose: loan.purpose,
-                interestRate: loan.interestRate,
-                duration: loan.duration,
+                purpose: loan.reason,
+                interestRate: loan.annualInterestRate,
+                duration: loan.durationMonths,
             }
         );
 
