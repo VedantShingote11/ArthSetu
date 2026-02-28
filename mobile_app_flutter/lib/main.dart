@@ -63,15 +63,15 @@ class MicrofinanceApp extends StatelessWidget {
             
             // ============ Theme Configuration ============
             theme: ThemeData(
-              // Primary color: Purple
-              primarySwatch: Colors.deepPurple,
-              primaryColor: const Color(0xFF6B46C1),
+              // Primary color: Indigo
+              primarySwatch: Colors.indigo,
+              primaryColor: const Color(0xFF312E81),
               
               // Accent color
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF6B46C1),
-                primary: const Color(0xFF6B46C1),
-                secondary: const Color(0xFF9F7AEA),
+                seedColor: const Color(0xFF312E81),
+                primary: const Color(0xFF312E81),
+                secondary: const Color(0xFF4338CA),
                 background: Colors.white,
                 surface: Colors.white,
               ),
@@ -81,7 +81,7 @@ class MicrofinanceApp extends StatelessWidget {
               
               // AppBar theme
               appBarTheme: const AppBarTheme(
-                backgroundColor: Color(0xFF6B46C1),
+                backgroundColor: Color(0xFF312E81),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 centerTitle: true,
@@ -99,7 +99,7 @@ class MicrofinanceApp extends StatelessWidget {
               // Button theme
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6B46C1),
+                  backgroundColor: const Color(0xFF312E81),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
@@ -127,7 +127,7 @@ class MicrofinanceApp extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: Color(0xFF6B46C1),
+                    color: Color(0xFF312E81),
                     width: 2,
                   ),
                 ),

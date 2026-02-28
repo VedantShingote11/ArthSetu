@@ -85,7 +85,7 @@ class PortfolioChart extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF7C3AED) : Colors.transparent,
+          color: isSelected ? const Color(0xFF4338CA) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -262,7 +262,7 @@ class PortfolioChart extends StatelessWidget {
           spots: spots,
           isCurved: true,
           curveSmoothness: 0.3,
-          color: const Color(0xFF7C3AED),
+          color: const Color(0xFF312E81),
           barWidth: 3,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -281,8 +281,8 @@ class PortfolioChart extends StatelessWidget {
             show: true,
             gradient: LinearGradient(
               colors: [
-                const Color(0xFF7C3AED).withOpacity(0.2),
-                const Color(0xFF7C3AED).withOpacity(0.05),
+                const Color(0xFF312E81).withOpacity(0.2),
+                const Color(0xFF312E81).withOpacity(0.05),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -330,7 +330,7 @@ class PortfolioChart extends StatelessWidget {
           width: 12,
           height: 12,
           decoration: const BoxDecoration(
-            color: Color(0xFF7C3AED),
+            color: Color(0xFF312E81),
             shape: BoxShape.circle,
           ),
         ),

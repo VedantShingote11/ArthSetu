@@ -198,9 +198,9 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF3E8FF),
+                          color: const Color(0xFFEEF2FF),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFF7C3AED), width: 0.8),
+                          border: Border.all(color: const Color(0xFF312E81), width: 0.8),
                         ),
                         child: Column(
                           children: [
@@ -208,7 +208,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(l10n.interestRate, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                                Text(previewRate!, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7C3AED))),
+                                Text(previewRate!, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81))),
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -216,7 +216,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(l10n.monthlyEmi, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                                Text(previewEmi!, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7C3AED))),
+                                Text(previewEmi!, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81))),
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -262,7 +262,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7C3AED),
+                  backgroundColor: const Color(0xFF4338CA),
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () async {
@@ -304,30 +304,81 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
   Widget build(BuildContext context) {
     context.watch<LanguageProvider>(); // rebuild instantly on language change
     final l10n = AppL10n.of(context);
+    final user = Provider.of<AuthProvider>(context).user;
+    String rawName = 'User';
+    if (user != null && user['email'] != null) {
+      rawName = user['email'].split('@').first;
+    } else if (user != null && user['firstName'] != null) {
+      rawName = user['firstName'];
+    }
+    final userName = rawName.isNotEmpty ? '${rawName[0].toUpperCase()}${rawName.substring(1)}' : 'User';
+    final getInitials = (String name) => name.isNotEmpty ? name[0].toUpperCase() : 'U';
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.borrowerDashboard),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: l10n.myProfile,
-            onPressed: () {
-              Navigator.of(context).pushNamed('/borrower-profile');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: l10n.logout,
-            onPressed: () async {
-              await Provider.of<AuthProvider>(context, listen: false).logout();
-              if (mounted) {
-                Navigator.of(context).pushReplacementNamed('/login');
-              }
-            },
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
+      backgroundColor: const Color(0xFF312E81), // Darker Indigo background for header
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.white24,
+                    child: Text(getInitials(userName), style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Hi, $userName',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.account_circle, color: Colors.white),
+                    tooltip: l10n.myProfile,
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/borrower-profile');
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.logout, color: Colors.white),
+                    tooltip: l10n.logout,
+                    onPressed: () async {
+                      await Provider.of<AuthProvider>(context, listen: false).logout();
+                      if (mounted) {
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 10),
+
+            // Main Content Area (Loans List)
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF9FAFB), // Very light gray/white background
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: RefreshIndicator(
         onRefresh: () async {
           await Provider.of<LoanProvider>(context, listen: false).fetchMyLoans();
         },
@@ -413,6 +464,12 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
           },
         ),
       ),
+      ),
+      ),
+      ),
+      ],
+      ),
+      ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -425,7 +482,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
                 MaterialPageRoute(builder: (_) => const LenAiChatScreen()),
               );
             },
-            backgroundColor: const Color(0xFF5B21B6),
+            backgroundColor: Colors.tealAccent.shade400, // Diff color to chat assistant icon
             tooltip: 'LenAI Agent',
             child: const Icon(Icons.smart_toy_rounded, color: Colors.white),
           ),
@@ -434,9 +491,9 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
           FloatingActionButton.extended(
             heroTag: 'create_loan_fab',
             onPressed: _showCreateLoanDialog,
-            backgroundColor: const Color(0xFF7C3AED),
-            icon: const Icon(Icons.add),
-            label: Text(l10n.createLoan),
+            backgroundColor: const Color(0xFF312E81), // matching header dark blue
+            icon: const Icon(Icons.add, color: Colors.white), // text should be white
+            label: Text(l10n.createLoan, style: const TextStyle(color: Colors.white)), // text should be white
           ),
         ],
       ),
@@ -477,7 +534,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
       builder: (dialogContext) => AlertDialog(
         title: Row(
           children: [
-            Icon(Icons.payment, color: isOverdue ? Colors.orange : const Color(0xFF7C3AED)),
+            Icon(Icons.payment, color: isOverdue ? Colors.orange : const Color(0xFF312E81)),
             const SizedBox(width: 8),
             Text(isOverdue ? l10n.emiOverdue : l10n.payNextEmiTitle),
           ],
@@ -492,15 +549,15 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF),
+                  color: const Color(0xFFEEF2FF),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF7C3AED), width: 0.8),
+                  border: Border.all(color: const Color(0xFF312E81), width: 0.8),
                 ),
                 child: Column(
                   children: [
                     Text(
                       'EMI $emiNumber of $durationMonths',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF7C3AED)),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF312E81)),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -549,7 +606,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
               ],
 
               const Divider(height: 14),
-              _repayRow(l10n.totalDueNow, '₹${totalDue.toStringAsFixed(2)}', bold: true, color: const Color(0xFF7C3AED)),
+              _repayRow(l10n.totalDueNow, '₹${totalDue.toStringAsFixed(2)}', bold: true, color: const Color(0xFF312E81)),
 
               const SizedBox(height: 10),
               Container(
@@ -570,7 +627,7 @@ class _BorrowerDashboardState extends State<BorrowerDashboard> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF7C3AED),
+              backgroundColor: const Color(0xFF312E81),
               foregroundColor: Colors.white,
             ),
             onPressed: () async {

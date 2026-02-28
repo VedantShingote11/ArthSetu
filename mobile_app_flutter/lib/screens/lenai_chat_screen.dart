@@ -458,13 +458,13 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)],
+            colors: [Color(0xFF4338CA), Color(0xFF312E81)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-                color: Color(0x557C3AED), blurRadius: 14, offset: Offset(0, 4))
+                color: Color(0x55312E81), blurRadius: 14, offset: Offset(0, 4))
           ],
         ),
         child: SafeArea(
@@ -564,7 +564,7 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
             border: Border.all(
               color: _isRecording
                   ? Colors.red
-                  : const Color(0xFF7C3AED).withValues(alpha: 0.4),
+                  : const Color(0xFF312E81).withValues(alpha: 0.4),
               width: 1.5,
             ),
           ),
@@ -576,12 +576,12 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Color(0xFF7C3AED)),
+                      strokeWidth: 2, color: Color(0xFF312E81)),
                 )
               else
                 Icon(
                   _isRecording ? Icons.stop_rounded : Icons.mic_rounded,
-                  color: _isRecording ? Colors.white : const Color(0xFF7C3AED),
+                  color: _isRecording ? Colors.white : const Color(0xFF312E81),
                   size: 20,
                 ),
               const SizedBox(width: 8),
@@ -675,7 +675,7 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
               height: 30,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)]),
+                    colors: [Color(0xFF4338CA), Color(0xFF312E81)]),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.smart_toy_rounded,
@@ -727,7 +727,7 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                  color: const Color(0xFF7C3AED).withValues(alpha: 0.3)),
+                  color: const Color(0xFF312E81).withValues(alpha: 0.3)),
               boxShadow: [
                 BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -787,14 +787,14 @@ class _LenAiChatScreenState extends State<LenAiChatScreen>
                 height: 44,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)],
+                    colors: [Color(0xFF4338CA), Color(0xFF312E81)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                        color: const Color(0xFF7C3AED).withValues(alpha: 0.45),
+                        color: const Color(0xFF312E81).withValues(alpha: 0.45),
                         blurRadius: 8,
                         offset: const Offset(0, 3))
                   ],
@@ -829,7 +829,7 @@ class _UserBubble extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF5B21B6), Color(0xFF7C3AED)],
+            colors: [Color(0xFF4338CA), Color(0xFF312E81)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -841,7 +841,7 @@ class _UserBubble extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-                color: Color(0x337C3AED), blurRadius: 8, offset: Offset(0, 3))
+                color: Color(0x33312E81), blurRadius: 8, offset: Offset(0, 3))
           ],
         ),
         child: Text(text,
@@ -885,7 +885,7 @@ class _AiBubble extends StatelessWidget {
             margin: const EdgeInsets.only(right: 8, top: 2, left: 4),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)]),
+                  colors: [Color(0xFF4338CA), Color(0xFF312E81)]),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.smart_toy_rounded,
@@ -1003,7 +1003,7 @@ class _TypingDots extends StatelessWidget {
               height: 8,
               margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: const BoxDecoration(
-                  color: Color(0xFF7C3AED), shape: BoxShape.circle),
+                  color: Color(0xFF312E81), shape: BoxShape.circle),
             ),
           );
         }),

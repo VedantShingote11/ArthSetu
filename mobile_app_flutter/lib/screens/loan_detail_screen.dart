@@ -55,7 +55,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
       title: 'Pay EMI',
       message: 'Confirm payment of the next EMI?',
       confirmLabel: 'Pay',
-      confirmColor: const Color(0xFF7C3AED),
+      confirmColor: const Color(0xFF312E81),
     );
     if (!confirm) return;
 
@@ -135,7 +135,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
       backgroundColor: const Color(0xFFF5F3FF),
       appBar: AppBar(
         title: const Text('Loan Details'),
-        backgroundColor: const Color(0xFF7C3AED),
+        backgroundColor: const Color(0xFF312E81),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -246,7 +246,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
               children: [
                 Text(
                   _inr.format(loan['amount'] ?? 0),
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF7C3AED)),
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF312E81)),
                 ),
                 Chip(
                   label: Text(status, style: const TextStyle(color: Colors.white, fontSize: 12)),
@@ -288,7 +288,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
       color: isOverdue ? const Color(0xFFFFF3CD) : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: isOverdue ? Colors.orange : const Color(0xFF7C3AED), width: 1.5),
+        side: BorderSide(color: isOverdue ? Colors.orange : const Color(0xFF312E81), width: 1.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -297,14 +297,14 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
           children: [
             Row(
               children: [
-                Icon(isOverdue ? Icons.warning_amber : Icons.payment, color: isOverdue ? Colors.orange : const Color(0xFF7C3AED)),
+                Icon(isOverdue ? Icons.warning_amber : Icons.payment, color: isOverdue ? Colors.orange : const Color(0xFF312E81)),
                 const SizedBox(width: 8),
                 Text(
                   isOverdue ? 'EMI OVERDUE' : 'Next EMI Due',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: isOverdue ? Colors.orange : const Color(0xFF7C3AED),
+                    color: isOverdue ? Colors.orange : const Color(0xFF312E81),
                   ),
                 ),
               ],
@@ -369,7 +369,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                   valueColor: Colors.orange[800]),
             const Divider(height: 16),
             _infoRow('Total Payable', _inr.format(quote['totalPayable'] ?? 0),
-                bold: true, valueColor: const Color(0xFF7C3AED)),
+                bold: true, valueColor: const Color(0xFF312E81)),
           ],
         ),
       ),
@@ -380,7 +380,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
   Widget _buildRulesCard(Map<String, dynamic> rules) {
     return Card(
       elevation: 1,
-      color: const Color(0xFFF3E8FF),
+      color: const Color(0xFFEEF2FF), // Lighter indigo
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -389,9 +389,9 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
           children: [
             const Row(
               children: [
-                Icon(Icons.info_outline, size: 18, color: Color(0xFF7C3AED)),
+                Icon(Icons.info_outline, size: 18, color: Color(0xFF312E81)),
                 SizedBox(width: 6),
-                Text('Platform Fee Policy', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7C3AED))),
+                Text('Platform Fee Policy', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81))),
               ],
             ),
             const SizedBox(height: 8),
@@ -428,7 +428,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: const Color(0xFF7C3AED),
+            color: const Color(0xFF312E81),
             child: const Text('EMI Schedule',
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
           ),
@@ -436,7 +436,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columnSpacing: 12,
-              headingRowColor: WidgetStateProperty.all(const Color(0xFFF3E8FF)),
+              headingRowColor: WidgetStateProperty.all(const Color(0xFFEEF2FF)),
               columns: const [
                 DataColumn(label: Text('#', style: TextStyle(fontWeight: FontWeight.bold))),
                 DataColumn(label: Text('Due Date', style: TextStyle(fontWeight: FontWeight.bold))),
@@ -502,7 +502,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
               icon: const Icon(Icons.payment),
               label: Text('Pay EMI (${nextEmi['emiAmount'] != null ? _inr.format(nextEmi['emiAmount']) : ''})', overflow: TextOverflow.ellipsis),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7C3AED),
+                backgroundColor: const Color(0xFF312E81),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

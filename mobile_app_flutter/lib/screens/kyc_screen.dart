@@ -83,10 +83,10 @@ class _KycScreenState extends State<KycScreen> {
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF7C3AED).withOpacity(0.1),
+                    color: const Color(0xFF312E81).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.camera_alt, color: Color(0xFF7C3AED)),
+                  child: const Icon(Icons.camera_alt, color: Color(0xFF312E81)),
                 ),
                 title: const Text('Take Photo'),
                 subtitle: const Text('Use your camera'),
@@ -96,10 +96,10 @@ class _KycScreenState extends State<KycScreen> {
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF7C3AED).withOpacity(0.1),
+                    color: const Color(0xFF312E81).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.photo_library, color: Color(0xFF7C3AED)),
+                  child: const Icon(Icons.photo_library, color: Color(0xFF312E81)),
                 ),
                 title: const Text('Choose from Gallery'),
                 subtitle: const Text('Select an existing photo'),
@@ -146,7 +146,7 @@ class _KycScreenState extends State<KycScreen> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text('KYC Verification'),
-        backgroundColor: const Color(0xFF7C3AED),
+        backgroundColor: const Color(0xFF312E81),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -195,7 +195,7 @@ class _KycScreenState extends State<KycScreen> {
   Widget _buildStatusHeader(KycProvider kycProvider) {
     final statusConfig = {
       'not_started': {'color': Colors.grey.shade600, 'icon': Icons.pending_outlined, 'label': 'Not Started'},
-      'documents_uploaded': {'color': const Color(0xFF7C3AED), 'icon': Icons.cloud_done_rounded, 'label': 'Documents Uploaded'},
+      'documents_uploaded': {'color': const Color(0xFF312E81), 'icon': Icons.cloud_done_rounded, 'label': 'Documents Uploaded'},
       'submitted': {'color': Colors.orange.shade700, 'icon': Icons.hourglass_top, 'label': 'Under Review'},
       'verified': {'color': Colors.green.shade700, 'icon': Icons.verified, 'label': 'Verified'},
       'rejected': {'color': Colors.red.shade700, 'icon': Icons.cancel, 'label': 'Rejected'},
@@ -278,7 +278,7 @@ class _KycScreenState extends State<KycScreen> {
           color: isUploaded
               ? Colors.green.shade300
               : isCurrentlyUploading
-                  ? const Color(0xFF7C3AED).withOpacity(0.4)
+                  ? const Color(0xFF312E81).withOpacity(0.4)
                   : Colors.grey.shade200,
           width: 1.5,
         ),
@@ -292,7 +292,7 @@ class _KycScreenState extends State<KycScreen> {
           decoration: BoxDecoration(
             color: isUploaded
                 ? Colors.green.shade50
-                : const Color(0xFF7C3AED).withOpacity(0.08),
+                : const Color(0xFF312E81).withOpacity(0.08),
             borderRadius: BorderRadius.circular(10),
           ),
           child: isCurrentlyUploading
@@ -329,8 +329,8 @@ class _KycScreenState extends State<KycScreen> {
                     ? null
                     : () => _pickAndUpload(docType, title),
                 style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF7C3AED),
-                  backgroundColor: const Color(0xFF7C3AED).withOpacity(0.08),
+                  foregroundColor: const Color(0xFF312E81),
+                  backgroundColor: const Color(0xFF312E81).withOpacity(0.08),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 ),
@@ -360,7 +360,7 @@ class _KycScreenState extends State<KycScreen> {
         label: const Text('Submit for Verification',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: canSubmit ? const Color(0xFF7C3AED) : Colors.grey.shade300,
+          backgroundColor: canSubmit ? const Color(0xFF312E81) : Colors.grey.shade300,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

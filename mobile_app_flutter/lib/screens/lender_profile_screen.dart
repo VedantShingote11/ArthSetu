@@ -53,18 +53,69 @@ class _LenderProfileScreenState extends State<LenderProfileScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
     final profileProvider = Provider.of<ProfileProvider>(context);
     final walletProvider = Provider.of<WalletProvider>(context);
-    final user = authProvider.userData;
+    final user = authProvider.userData; // <-- Re-added this defined user getter
+    String rawName = 'Lender';
+    if (user != null && user['email'] != null) {
+      rawName = user['email'].split('@').first;
+    } else if (user != null && user['name'] != null) {
+      rawName = user['name'];
+    }
+    final userName = rawName.isNotEmpty ? '${rawName[0].toUpperCase()}${rawName.substring(1)}' : 'Lender';
+    final getInitials = (String name) => name.isNotEmpty ? name[0].toUpperCase() : 'L';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: Text(AppL10n.of(context).myPortfolio),
-        backgroundColor: const Color(0xFF7C3AED),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadData,
+      backgroundColor: const Color(0xFF312E81), // Darker Indigo background for header
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                children: [
+                   IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 32),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const SizedBox(width: 8),
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.white24,
+                    child: Text(getInitials(userName), style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                     child: Text(
+                      'Hi, $userName',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Main Content Area
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: RefreshIndicator(
+                    onRefresh: _loadData,
         child: profileProvider.isLoadingPortfolio
             ? const Center(child: CircularProgressIndicator())
             : profileProvider.portfolioError != null
@@ -90,8 +141,6 @@ class _LenderProfileScreenState extends State<LenderProfileScreen> {
                       builder: (context, kycProvider, _) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildHeader(user),
-                          const SizedBox(height: 16),
                           _buildKycBanner(kycProvider),
                           if (kycProvider.isVerified) ...[
                             const SizedBox(height: 16),
@@ -109,6 +158,12 @@ class _LenderProfileScreenState extends State<LenderProfileScreen> {
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -234,110 +289,20 @@ class _LenderProfileScreenState extends State<LenderProfileScreen> {
     );
   }
 
-  Widget _buildHeader(Map<String, dynamic>? user) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: const Color(0xFF7C3AED).withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.person,
-              size: 32,
-              color: Color(0xFF7C3AED),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  user?['name'] ?? 'Lender',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  user?['email'] ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.verified,
-                            size: 14,
-                            color: Colors.green[700],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            AppL10n.of(context).lenderLabel,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.green[700],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildWalletBalance(WalletProvider walletProvider) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF7C3AED), Color(0xFF9F7AEA)],
+          colors: [Color(0xFF4338CA), Color(0xFF312E81)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C3AED).withOpacity(0.3),
+            color: const Color(0xFF312E81).withOpacity(0.3),
             spreadRadius: 1,
             blurRadius: 8,
             offset: const Offset(0, 4),

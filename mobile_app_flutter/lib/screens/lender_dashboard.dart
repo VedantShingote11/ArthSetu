@@ -148,9 +148,9 @@ class _LenderDashboardState extends State<LenderDashboard> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF3E8FF),
+                      color: const Color(0xFFEEF2FF), // Violet -> light indigo
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFF7C3AED), width: 0.8),
+                      border: Border.all(color: const Color(0xFF312E81), width: 0.8),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,7 +159,7 @@ class _LenderDashboardState extends State<LenderDashboard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
                             Text('Your Interest Rate', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                            Text('12% p.a.', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7C3AED), fontSize: 16)),
+                            Text('12% p.a.', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81), fontSize: 16)),
                           ],
                         ),
                         Column(
@@ -244,7 +244,7 @@ class _LenderDashboardState extends State<LenderDashboard> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7C3AED),
+                  backgroundColor: const Color(0xFF4338CA), // Lighter indigo
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () async {
@@ -283,42 +283,106 @@ class _LenderDashboardState extends State<LenderDashboard> {
   @override
   Widget build(BuildContext context) {
     context.watch<LanguageProvider>(); // rebuild instantly on language change
+    final l10n = AppL10n.of(context);
+    final user = Provider.of<AuthProvider>(context).user;
+    String rawName = 'User';
+    if (user != null && user['email'] != null) {
+      rawName = user['email'].split('@').first;
+    } else if (user != null && user['firstName'] != null) {
+      rawName = user['firstName'];
+    }
+    final userName = rawName.isNotEmpty ? '${rawName[0].toUpperCase()}${rawName.substring(1)}' : 'User';
+    final getInitials = (String name) => name.isNotEmpty ? name[0].toUpperCase() : 'U';
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppL10n.of(context).lenderDashboard),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.account_circle),
-              tooltip: AppL10n.of(context).myPortfolio,
-              onPressed: () {
-                Navigator.of(context).pushNamed('/lender-profile');
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: AppL10n.of(context).logout,
-              onPressed: () async {
-                await Provider.of<AuthProvider>(context, listen: false).logout();
-                if (mounted) {
-                  Navigator.of(context).pushReplacementNamed('/login');
-                }
-              },
-            ),
-          ],
-          bottom: TabBar(
-            tabs: [
-              Tab(text: AppL10n.of(context).availableLoans),
-              Tab(text: AppL10n.of(context).myInvestments),
+        backgroundColor: const Color(0xFF312E81), // Darker Indigo background for header
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Custom Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.white24,
+                      child: Text(getInitials(userName), style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Hi, $userName',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.account_circle, color: Colors.white),
+                      tooltip: l10n.myPortfolio,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/lender-profile');
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.logout, color: Colors.white),
+                      tooltip: l10n.logout,
+                      onPressed: () async {
+                        await Provider.of<AuthProvider>(context, listen: false).logout();
+                        if (mounted) {
+                          Navigator.of(context).pushReplacementNamed('/login');
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              // TabBar inside the dark header area
+              TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white54,
+                indicatorColor: Colors.white,
+                indicatorWeight: 3,
+                tabs: [
+                  Tab(text: l10n.availableLoans),
+                  Tab(text: l10n.myInvestments),
+                ],
+              ),
+              
+              const SizedBox(height: 10),
+
+              // Main Content Area (Tab Views)
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF9FAFB), // Very light gray/white background
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                    child: TabBarView(
+                      children: [
+                        _buildAvailableLoansTab(),
+                        _buildMyInvestmentsTab(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            _buildAvailableLoansTab(),
-            _buildMyInvestmentsTab(),
-          ],
         ),
       ),
     );
@@ -355,7 +419,7 @@ class _LenderDashboardState extends State<LenderDashboard> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF7C3AED), Color(0xFF5B21B6)],
+                    colors: [Color(0xFF4338CA), Color(0xFF312E81)], // Lighter theme colors
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -388,6 +452,10 @@ class _LenderDashboardState extends State<LenderDashboard> {
             Widget? actionButton;
             if (status == 'Requested') {
               actionButton = ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4338CA), // Lighter indigo to match the banner above
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: () => _showFundLoanDialog(loan),
                 icon: const Icon(Icons.account_balance_wallet),
                 label: Text(AppL10n.of(context).fundLoan),
