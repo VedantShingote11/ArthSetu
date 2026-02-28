@@ -2,6 +2,7 @@ import { requireRole } from '@/lib/auth/middleware';
 import { createBlock } from '@/lib/blockchain';
 import BorrowerProfile from '@/lib/models/BorrowerProfile';
 import Loan from '@/lib/models/Loan';
+import User from '@/lib/models/User';
 import dbConnect from '@/lib/mongodb';
 import { calculateRiskScore, suggestInterestRate } from '@/lib/riskEngine';
 import { NextResponse } from 'next/server';
@@ -139,6 +140,12 @@ export async function POST(request) {
         } catch (mlErr) {
             console.error('Failed to calculate risk score:', mlErr);
             riskScore = 400; // fallback
+        }
+
+        // Pull creditScore from User Root
+        const rootUser = await User.findById(user.userId);
+        if (rootUser && rootUser.creditScore && rootUser.creditScore > 0) {
+            riskScore = rootUser.creditScore;
         }
 
         // Update borrower profile Profile Score

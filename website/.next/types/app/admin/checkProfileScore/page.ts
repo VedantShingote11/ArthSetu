@@ -1,8 +1,8 @@
-// File: D:\Morpheus\microfinance-app\website\app\admin\blockchain\page.jsx
-import * as entry from '../../../../../app/admin/blockchain/page.js'
+// File: D:\Morpheus\microfinance-app\website\app\admin\checkProfileScore\page.jsx
+import * as entry from '../../../../../app/admin/checkProfileScore/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../app/admin/blockchain/page.js')
+type TEntry = typeof import('../../../../../app/admin/checkProfileScore/page.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{

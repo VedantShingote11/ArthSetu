@@ -1,3 +1,16 @@
+/**
+ * Loan Model (MongoDB Schema)
+ *
+ * Stores loan metadata OFF-CHAIN including:
+ * - Loan details (amount, duration, computed interest)
+ * - EMI schedule (reducing balance method)
+ * - Status tracking
+ * - Blockchain references
+ *
+ * NOTE: Actual loan contract logic is ON-CHAIN in Solidity.
+ * Interest rate is NEVER user-provided — always computed from credit score.
+ */
+
 import mongoose from 'mongoose';
 
 // ─── EMI Schedule Entry ───────────────────────────────────────────────────────
