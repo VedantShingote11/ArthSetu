@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Truffle
+blockchain/build/
+blockchain/deployment/
+
+# Flutter
+mobile_app_flutter/.dart_tool/
+mobile_app_flutter/.flutter-plugins
+mobile_app_flutter/.flutter-plugins-dependencies
+mobile_app_flutter/.packages
+mobile_app_flutter/build/
+mobile_app_flutter/ios/Pods/
+mobile_app_flutter/ios/.symlinks/
+mobile_app_flutter/android/.gradle/
+mobile_app_flutter/android/app/debug/
+mobile_app_flutter/android/app/profile/
+mobile_app_flutter/android/app/release/
+mobile_app_flutter/.metadata
+
+# MongoDB
+data/
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
+.npm
+mobile_app_flutter/ 
+
+# Next.js
+.next/
+website/.next/
+
+# Heavy files exceeding GitHub's 100MB limit
+model.pkl
+*.pkl
+website/model.pkl
+**/model.pkl
